@@ -22,8 +22,8 @@ public class ConfigureSwaggerUIOptions : IConfigureOptions<SwaggerUIOptions>
         options.DisplayRequestDuration();
 
         foreach (var apiVersionDescription in this.apiVersionDescriptionProvider
-            .ApiVersionDescriptions
-            .OrderByDescending(x => x.ApiVersion))
+                     .ApiVersionDescriptions
+                     .OrderByDescending(x => x.ApiVersion))
         {
             options.SwaggerEndpoint(
                 $"/swagger/{apiVersionDescription.GroupName}/swagger.json",

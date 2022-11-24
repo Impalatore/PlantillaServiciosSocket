@@ -24,17 +24,22 @@ internal static class CustomServiceCollectionExtensions
         services
             // ConfigureAndValidateSingleton registers IOptions<T> and also T as a singleton to the services collection.
             .ConfigureAndValidateSingleton<ApplicationOptions>(configuration)
-            .ConfigureAndValidateSingleton<CacheProfileOptions>(configuration.GetRequiredSection(nameof(ApplicationOptions.CacheProfiles)))
-            .ConfigureAndValidateSingleton<CompressionOptions>(configuration.GetRequiredSection(nameof(ApplicationOptions.Compression)))
-            .ConfigureAndValidateSingleton<ForwardedHeadersOptions>(configuration.GetRequiredSection(nameof(ApplicationOptions.ForwardedHeaders)))
+            .ConfigureAndValidateSingleton<CacheProfileOptions>(
+                configuration.GetRequiredSection(nameof(ApplicationOptions.CacheProfiles)))
+            .ConfigureAndValidateSingleton<CompressionOptions>(
+                configuration.GetRequiredSection(nameof(ApplicationOptions.Compression)))
+            .ConfigureAndValidateSingleton<ForwardedHeadersOptions>(
+                configuration.GetRequiredSection(nameof(ApplicationOptions.ForwardedHeaders)))
             .Configure<ForwardedHeadersOptions>(
                 options =>
                 {
                     options.KnownNetworks.Clear();
                     options.KnownProxies.Clear();
                 })
-            .ConfigureAndValidateSingleton<HostOptions>(configuration.GetRequiredSection(nameof(ApplicationOptions.Host)))
-            .ConfigureAndValidateSingleton<KestrelServerOptions>(configuration.GetRequiredSection(nameof(ApplicationOptions.Kestrel)));
+            .ConfigureAndValidateSingleton<HostOptions>(
+                configuration.GetRequiredSection(nameof(ApplicationOptions.Host)))
+            .ConfigureAndValidateSingleton<KestrelServerOptions>(
+                configuration.GetRequiredSection(nameof(ApplicationOptions.Kestrel)));
 
     public static IServiceCollection AddCustomConfigureOptions(this IServiceCollection services) =>
         services

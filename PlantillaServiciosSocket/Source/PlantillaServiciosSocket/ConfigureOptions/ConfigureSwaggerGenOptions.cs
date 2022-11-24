@@ -38,9 +38,9 @@ public class ConfigureSwaggerGenOptions : IConfigureOptions<SwaggerGenOptions>
             var info = new OpenApiInfo()
             {
                 Title = AssemblyInformation.Current.Product,
-                Description = apiVersionDescription.IsDeprecated ?
-                    $"{AssemblyInformation.Current.Description} This API version has been deprecated." :
-                    AssemblyInformation.Current.Description,
+                Description = apiVersionDescription.IsDeprecated
+                    ? $"{AssemblyInformation.Current.Description} This API version has been deprecated."
+                    : AssemblyInformation.Current.Description,
                 Version = apiVersionDescription.ApiVersion.ToString(),
             };
             options.SwaggerDoc(apiVersionDescription.GroupName, info);

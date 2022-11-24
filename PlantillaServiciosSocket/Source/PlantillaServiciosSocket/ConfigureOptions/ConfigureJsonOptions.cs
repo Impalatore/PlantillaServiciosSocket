@@ -22,7 +22,7 @@ public class ConfigureJsonOptions : IConfigureOptions<JsonOptions>
 
         // Pretty print the JSON in development for easier debugging.
         jsonSerializerOptions.WriteIndented = this.webHostEnvironment.IsDevelopment() ||
-            this.webHostEnvironment.IsEnvironment(Constants.EnvironmentName.Test);
+                                              this.webHostEnvironment.IsEnvironment(Constants.EnvironmentName.Test);
 
         jsonSerializerOptions.AddContext<CustomJsonSerializerContext>();
     }

@@ -65,7 +65,8 @@ public class CarsControllerTest : CustomWebApplicationFactory<Program>
     {
         var car = new Models.Car();
         this.CarRepositoryMock.Setup(x => x.GetAsync(1, It.IsAny<CancellationToken>())).ReturnsAsync(car);
-        this.CarRepositoryMock.Setup(x => x.DeleteAsync(car, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+        this.CarRepositoryMock.Setup(x => x.DeleteAsync(car, It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
 
         var response = await this.client.DeleteAsync(new Uri("/cars/1", UriKind.Relative)).ConfigureAwait(false);
 
@@ -75,7 +76,8 @@ public class CarsControllerTest : CustomWebApplicationFactory<Program>
     [Fact]
     public async Task Delete_CarNotFound_Returns404NotFoundAsync()
     {
-        this.CarRepositoryMock.Setup(x => x.GetAsync(999, It.IsAny<CancellationToken>())).ReturnsAsync((Models.Car?)null);
+        this.CarRepositoryMock.Setup(x => x.GetAsync(999, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((Models.Car?)null);
 
         var response = await this.client.DeleteAsync(new Uri("/cars/999", UriKind.Relative)).ConfigureAwait(false);
 
@@ -100,7 +102,8 @@ public class CarsControllerTest : CustomWebApplicationFactory<Program>
         var response = await this.client.GetAsync(new Uri("/cars/1", UriKind.Relative)).ConfigureAwait(false);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal(new DateTimeOffset(2000, 1, 2, 3, 4, 5, TimeSpan.FromHours(6)), response.Content.Headers.LastModified);
+        Assert.Equal(new DateTimeOffset(2000, 1, 2, 3, 4, 5, TimeSpan.FromHours(6)),
+            response.Content.Headers.LastModified);
         Assert.Equal(ContentType.RestfulJson, response.Content.Headers.ContentType?.MediaType);
         var carViewModel = await response.Content.ReadAsAsync<Car>(this.formatters).ConfigureAwait(false);
         Assert.Equal(1, carViewModel.CarId);
@@ -113,7 +116,8 @@ public class CarsControllerTest : CustomWebApplicationFactory<Program>
     [Fact]
     public async Task Get_CarNotFound_Returns404NotFoundAsync()
     {
-        this.CarRepositoryMock.Setup(x => x.GetAsync(999, It.IsAny<CancellationToken>())).ReturnsAsync((Models.Car?)null);
+        this.CarRepositoryMock.Setup(x => x.GetAsync(999, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((Models.Car?)null);
 
         var response = await this.client.GetAsync(new Uri("/cars/999", UriKind.Relative)).ConfigureAwait(false);
 
@@ -185,7 +189,8 @@ public class CarsControllerTest : CustomWebApplicationFactory<Program>
         Assert.Equal(ContentType.RestfulJson, response.Content.Headers.ContentType?.MediaType);
         await this.AssertPageUrlsAsync(
                 response,
-                nextPageUrl: $"http://localhost/cars?First=3&After={Cursor.ToCursor(new DateTimeOffset(2000, 1, 3, 0, 0, 0, TimeSpan.Zero))}",
+                nextPageUrl:
+                $"http://localhost/cars?First=3&After={Cursor.ToCursor(new DateTimeOffset(2000, 1, 3, 0, 0, 0, TimeSpan.Zero))}",
                 previousPageUrl: null,
                 expectedPageCount: 3,
                 actualPageCount: 3,
@@ -198,17 +203,21 @@ public class CarsControllerTest : CustomWebApplicationFactory<Program>
     {
         var cars = GetCars();
         this.CarRepositoryMock
-            .Setup(x => x.GetCarsAsync(3, new DateTimeOffset(2000, 1, 3, 0, 0, 0, TimeSpan.Zero), null, It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetCarsAsync(3, new DateTimeOffset(2000, 1, 3, 0, 0, 0, TimeSpan.Zero), null,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(cars.Skip(3).Take(3).ToList());
         this.CarRepositoryMock
             .Setup(x => x.GetTotalCountAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(cars.Count);
         this.CarRepositoryMock
-            .Setup(x => x.GetHasNextPageAsync(3, new DateTimeOffset(2000, 1, 3, 0, 0, 0, TimeSpan.Zero), It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetHasNextPageAsync(3, new DateTimeOffset(2000, 1, 3, 0, 0, 0, TimeSpan.Zero),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
         var response = await this.client
-            .GetAsync(new Uri($"/cars?First=3&After={Cursor.ToCursor(new DateTimeOffset(2000, 1, 3, 0, 0, 0, TimeSpan.Zero))}", UriKind.Relative))
+            .GetAsync(new Uri(
+                $"/cars?First=3&After={Cursor.ToCursor(new DateTimeOffset(2000, 1, 3, 0, 0, 0, TimeSpan.Zero))}",
+                UriKind.Relative))
             .ConfigureAwait(false);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -216,7 +225,8 @@ public class CarsControllerTest : CustomWebApplicationFactory<Program>
         await this.AssertPageUrlsAsync(
                 response,
                 nextPageUrl: null,
-                previousPageUrl: $"http://localhost/cars?Last=3&Before={Cursor.ToCursor(new DateTimeOffset(2000, 1, 4, 0, 0, 0, TimeSpan.Zero))}",
+                previousPageUrl:
+                $"http://localhost/cars?Last=3&Before={Cursor.ToCursor(new DateTimeOffset(2000, 1, 4, 0, 0, 0, TimeSpan.Zero))}",
                 expectedPageCount: 3,
                 actualPageCount: 1,
                 totalCount: 4)
@@ -246,7 +256,8 @@ public class CarsControllerTest : CustomWebApplicationFactory<Program>
         await this.AssertPageUrlsAsync(
                 response,
                 nextPageUrl: null,
-                previousPageUrl: $"http://localhost/cars?Last=3&Before={Cursor.ToCursor(new DateTimeOffset(2000, 1, 2, 0, 0, 0, TimeSpan.Zero))}",
+                previousPageUrl:
+                $"http://localhost/cars?Last=3&Before={Cursor.ToCursor(new DateTimeOffset(2000, 1, 2, 0, 0, 0, TimeSpan.Zero))}",
                 expectedPageCount: 3,
                 actualPageCount: 3,
                 totalCount: 4)
@@ -258,24 +269,29 @@ public class CarsControllerTest : CustomWebApplicationFactory<Program>
     {
         var cars = GetCars();
         this.CarRepositoryMock
-            .Setup(x => x.GetCarsReverseAsync(3, null, new DateTimeOffset(2000, 1, 2, 0, 0, 0, TimeSpan.Zero), It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetCarsReverseAsync(3, null, new DateTimeOffset(2000, 1, 2, 0, 0, 0, TimeSpan.Zero),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(cars.SkipLast(3).TakeLast(3).ToList());
         this.CarRepositoryMock
             .Setup(x => x.GetTotalCountAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(cars.Count);
         this.CarRepositoryMock
-            .Setup(x => x.GetHasPreviousPageAsync(3, new DateTimeOffset(2000, 1, 2, 0, 0, 0, TimeSpan.Zero), It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetHasPreviousPageAsync(3, new DateTimeOffset(2000, 1, 2, 0, 0, 0, TimeSpan.Zero),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
         var response = await this.client
-            .GetAsync(new Uri($"/cars?Last=3&Before={Cursor.ToCursor(new DateTimeOffset(2000, 1, 2, 0, 0, 0, TimeSpan.Zero))}", UriKind.Relative))
+            .GetAsync(new Uri(
+                $"/cars?Last=3&Before={Cursor.ToCursor(new DateTimeOffset(2000, 1, 2, 0, 0, 0, TimeSpan.Zero))}",
+                UriKind.Relative))
             .ConfigureAwait(false);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(ContentType.RestfulJson, response.Content.Headers.ContentType?.MediaType);
         await this.AssertPageUrlsAsync(
                 response,
-                nextPageUrl: $"http://localhost/cars?First=3&After={Cursor.ToCursor(new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero))}",
+                nextPageUrl:
+                $"http://localhost/cars?First=3&After={Cursor.ToCursor(new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero))}",
                 previousPageUrl: null,
                 expectedPageCount: 3,
                 actualPageCount: 1,
@@ -288,25 +304,31 @@ public class CarsControllerTest : CustomWebApplicationFactory<Program>
     {
         var cars = GetCars();
         this.CarRepositoryMock
-            .Setup(x => x.GetCarsAsync(2, new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero), null, It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetCarsAsync(2, new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero), null,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(cars.Skip(1).Take(2).ToList());
         this.CarRepositoryMock
             .Setup(x => x.GetTotalCountAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(cars.Count);
         this.CarRepositoryMock
-            .Setup(x => x.GetHasNextPageAsync(2, new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero), It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetHasNextPageAsync(2, new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
 
         var response = await this.client
-            .GetAsync(new Uri($"/cars?First=2&After={Cursor.ToCursor(new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero))}", UriKind.Relative))
+            .GetAsync(new Uri(
+                $"/cars?First=2&After={Cursor.ToCursor(new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero))}",
+                UriKind.Relative))
             .ConfigureAwait(false);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(ContentType.RestfulJson, response.Content.Headers.ContentType?.MediaType);
         await this.AssertPageUrlsAsync(
                 response,
-                nextPageUrl: $"http://localhost/cars?First=2&After={Cursor.ToCursor(new DateTimeOffset(2000, 1, 3, 0, 0, 0, TimeSpan.Zero))}",
-                previousPageUrl: $"http://localhost/cars?Last=2&Before={Cursor.ToCursor(new DateTimeOffset(2000, 1, 2, 0, 0, 0, TimeSpan.Zero))}",
+                nextPageUrl:
+                $"http://localhost/cars?First=2&After={Cursor.ToCursor(new DateTimeOffset(2000, 1, 3, 0, 0, 0, TimeSpan.Zero))}",
+                previousPageUrl:
+                $"http://localhost/cars?Last=2&Before={Cursor.ToCursor(new DateTimeOffset(2000, 1, 2, 0, 0, 0, TimeSpan.Zero))}",
                 expectedPageCount: 2,
                 actualPageCount: 2,
                 totalCount: 4)
@@ -324,7 +346,8 @@ public class CarsControllerTest : CustomWebApplicationFactory<Program>
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Equal(ContentType.ProblemJson, response.Content.Headers.ContentType?.MediaType);
-        var problemDetails = await response.Content.ReadAsAsync<ValidationProblemDetails>(this.formatters).ConfigureAwait(false);
+        var problemDetails = await response.Content.ReadAsAsync<ValidationProblemDetails>(this.formatters)
+            .ConfigureAwait(false);
         Assert.Equal(StatusCodes.Status400BadRequest, problemDetails.Status);
         Assert.Equivalent(
             new Dictionary<string, string[]>()
@@ -369,7 +392,8 @@ public class CarsControllerTest : CustomWebApplicationFactory<Program>
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Equal(ContentType.ProblemJson, response.Content.Headers.ContentType?.MediaType);
-        var problemDetails = await response.Content.ReadAsAsync<ValidationProblemDetails>(this.formatters).ConfigureAwait(false);
+        var problemDetails = await response.Content.ReadAsAsync<ValidationProblemDetails>(this.formatters)
+            .ConfigureAwait(false);
         Assert.Equal(StatusCodes.Status400BadRequest, problemDetails.Status);
         Assert.Equivalent(
             new Dictionary<string, string[]>()
@@ -393,7 +417,8 @@ public class CarsControllerTest : CustomWebApplicationFactory<Program>
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Equal(ContentType.ProblemJson, response.Content.Headers.ContentType?.MediaType);
-        var problemDetails = await response.Content.ReadAsAsync<ValidationProblemDetails>(this.formatters).ConfigureAwait(false);
+        var problemDetails = await response.Content.ReadAsAsync<ValidationProblemDetails>(this.formatters)
+            .ConfigureAwait(false);
         Assert.Equal(StatusCodes.Status400BadRequest, problemDetails.Status);
         Assert.Equivalent(
             new Dictionary<string, string[]>()
@@ -415,7 +440,8 @@ public class CarsControllerTest : CustomWebApplicationFactory<Program>
 
         Assert.Equal(HttpStatusCode.UnsupportedMediaType, response.StatusCode);
         Assert.Equal(ContentType.ProblemJson, response.Content.Headers.ContentType?.MediaType);
-        var problemDetails = await response.Content.ReadAsAsync<ValidationProblemDetails>(this.formatters).ConfigureAwait(false);
+        var problemDetails = await response.Content.ReadAsAsync<ValidationProblemDetails>(this.formatters)
+            .ConfigureAwait(false);
         Assert.Equal(StatusCodes.Status415UnsupportedMediaType, problemDetails.Status);
         Assert.Empty(problemDetails.Errors);
     }
@@ -457,13 +483,15 @@ public class CarsControllerTest : CustomWebApplicationFactory<Program>
             Make = "Honda",
             Model = "Civic",
         };
-        this.CarRepositoryMock.Setup(x => x.GetAsync(999, It.IsAny<CancellationToken>())).ReturnsAsync((Models.Car?)null);
+        this.CarRepositoryMock.Setup(x => x.GetAsync(999, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((Models.Car?)null);
 
         var response = await this.client.PutAsJsonAsync("cars/999", saveCar).ConfigureAwait(false);
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         Assert.Equal(ContentType.ProblemJson, response.Content.Headers.ContentType?.MediaType);
-        var problemDetails = await response.Content.ReadAsAsync<ValidationProblemDetails>(this.formatters).ConfigureAwait(false);
+        var problemDetails = await response.Content.ReadAsAsync<ValidationProblemDetails>(this.formatters)
+            .ConfigureAwait(false);
         Assert.Equal(StatusCodes.Status404NotFound, problemDetails.Status);
         Assert.Empty(problemDetails.Errors);
     }
@@ -475,10 +503,12 @@ public class CarsControllerTest : CustomWebApplicationFactory<Program>
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Equal(ContentType.ProblemJson, response.Content.Headers.ContentType?.MediaType);
-        var problemDetails = await response.Content.ReadAsAsync<ValidationProblemDetails>(this.formatters).ConfigureAwait(false);
+        var problemDetails = await response.Content.ReadAsAsync<ValidationProblemDetails>(this.formatters)
+            .ConfigureAwait(false);
         Assert.Equal(StatusCodes.Status400BadRequest, problemDetails.Status);
         Assert.Equal(3, problemDetails.Errors.Count);
-        Assert.Equal(new string[] { "'Cylinders' must be between 1 and 20. You entered 0." }, problemDetails.Errors[nameof(SaveCar.Cylinders)]);
+        Assert.Equal(new string[] { "'Cylinders' must be between 1 and 20. You entered 0." },
+            problemDetails.Errors[nameof(SaveCar.Cylinders)]);
         Assert.Equal(new string[] { "'Make' must not be empty." }, problemDetails.Errors[nameof(SaveCar.Make)]);
         Assert.Equal(new string[] { "'Model' must not be empty." }, problemDetails.Errors[nameof(SaveCar.Model)]);
     }
@@ -490,7 +520,8 @@ public class CarsControllerTest : CustomWebApplicationFactory<Program>
         patch.Remove(x => x.Make);
         var json = JsonConvert.SerializeObject(patch);
         using var content = new StringContent(json, Encoding.UTF8, ContentType.JsonPatch);
-        this.CarRepositoryMock.Setup(x => x.GetAsync(999, It.IsAny<CancellationToken>())).ReturnsAsync((Models.Car?)null);
+        this.CarRepositoryMock.Setup(x => x.GetAsync(999, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((Models.Car?)null);
 
         var response = await this.client
             .PatchAsync(new Uri("cars/999", UriKind.Relative), content)
@@ -498,7 +529,8 @@ public class CarsControllerTest : CustomWebApplicationFactory<Program>
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         Assert.Equal(ContentType.ProblemJson, response.Content.Headers.ContentType?.MediaType);
-        var problemDetails = await response.Content.ReadAsAsync<ValidationProblemDetails>(this.formatters).ConfigureAwait(false);
+        var problemDetails = await response.Content.ReadAsAsync<ValidationProblemDetails>(this.formatters)
+            .ConfigureAwait(false);
         Assert.Equal(StatusCodes.Status404NotFound, problemDetails.Status);
         Assert.Empty(problemDetails.Errors);
     }
@@ -519,7 +551,8 @@ public class CarsControllerTest : CustomWebApplicationFactory<Program>
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Equal(ContentType.ProblemJson, response.Content.Headers.ContentType?.MediaType);
-        var problemDetails = await response.Content.ReadAsAsync<ValidationProblemDetails>(this.formatters).ConfigureAwait(false);
+        var problemDetails = await response.Content.ReadAsAsync<ValidationProblemDetails>(this.formatters)
+            .ConfigureAwait(false);
         Assert.Equal(StatusCodes.Status400BadRequest, problemDetails.Status);
         Assert.Equivalent(
             new Dictionary<string, string[]>()

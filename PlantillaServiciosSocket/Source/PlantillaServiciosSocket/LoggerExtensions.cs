@@ -30,7 +30,8 @@ internal static partial class LoggerExtensions
     [LoggerMessage(
         EventId = 5002,
         Level = LogLevel.Critical,
-        Message = "{Application} terminated unexpectedly in {Environment} mode with runtime {Runtime} and OS {OperatingSystem}.")]
+        Message =
+            "{Application} terminated unexpectedly in {Environment} mode with runtime {Runtime} and OS {OperatingSystem}.")]
     public static partial void ApplicationTerminatedUnexpectedly(
         this ILogger logger,
         Exception exception,

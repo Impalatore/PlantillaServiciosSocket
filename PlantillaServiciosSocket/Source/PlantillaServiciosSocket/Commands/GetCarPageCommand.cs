@@ -46,16 +46,22 @@ public class GetCarPageCommand
             return new BadRequestObjectResult(new ValidationProblemDetails(modelState));
         }
 
-        pageOptions.First = !pageOptions.First.HasValue && !pageOptions.Last.HasValue ? DefaultPageSize : pageOptions.First;
+        pageOptions.First = !pageOptions.First.HasValue && !pageOptions.Last.HasValue
+            ? DefaultPageSize
+            : pageOptions.First;
         var createdAfter = Cursor.FromCursor<DateTimeOffset?>(pageOptions.After);
         var createdBefore = Cursor.FromCursor<DateTimeOffset?>(pageOptions.Before);
 
-        var getCarsTask = this.GetCarsAsync(pageOptions.First, pageOptions.Last, createdAfter, createdBefore, cancellationToken);
-        var getHasNextPageTask = this.GetHasNextPageAsync(pageOptions.First, createdAfter, createdBefore, cancellationToken);
-        var getHasPreviousPageTask = this.GetHasPreviousPageAsync(pageOptions.Last, createdAfter, createdBefore, cancellationToken);
+        var getCarsTask = this.GetCarsAsync(pageOptions.First, pageOptions.Last, createdAfter, createdBefore,
+            cancellationToken);
+        var getHasNextPageTask =
+            this.GetHasNextPageAsync(pageOptions.First, createdAfter, createdBefore, cancellationToken);
+        var getHasPreviousPageTask =
+            this.GetHasPreviousPageAsync(pageOptions.Last, createdAfter, createdBefore, cancellationToken);
         var totalCountTask = this.carRepository.GetTotalCountAsync(cancellationToken);
 
-        await Task.WhenAll(getCarsTask, getHasNextPageTask, getHasPreviousPageTask, totalCountTask).ConfigureAwait(false);
+        await Task.WhenAll(getCarsTask, getHasNextPageTask, getHasPreviousPageTask, totalCountTask)
+            .ConfigureAwait(false);
         var cars = await getCarsTask.ConfigureAwait(false);
         var hasNextPage = await getHasNextPageTask.ConfigureAwait(false);
         var hasPreviousPage = await getHasPreviousPageTask.ConfigureAwait(false);
@@ -77,22 +83,26 @@ public class GetCarPageCommand
                 Count = carViewModels.Count,
                 HasNextPage = hasNextPage,
                 HasPreviousPage = hasPreviousPage,
-                NextPageUrl = hasNextPage ? new Uri(this.linkGenerator.GetUriByRouteValues(
-                    httpContext,
-                    CarsControllerRoute.GetCarPage,
-                    new PageOptions()
-                    {
-                        First = pageOptions.First ?? pageOptions.Last,
-                        After = endCursor,
-                    })!) : null,
-                PreviousPageUrl = hasPreviousPage ? new Uri(this.linkGenerator.GetUriByRouteValues(
-                    httpContext,
-                    CarsControllerRoute.GetCarPage,
-                    new PageOptions()
-                    {
-                        Last = pageOptions.First ?? pageOptions.Last,
-                        Before = startCursor,
-                    })!) : null,
+                NextPageUrl = hasNextPage
+                    ? new Uri(this.linkGenerator.GetUriByRouteValues(
+                        httpContext,
+                        CarsControllerRoute.GetCarPage,
+                        new PageOptions()
+                        {
+                            First = pageOptions.First ?? pageOptions.Last,
+                            After = endCursor,
+                        })!)
+                    : null,
+                PreviousPageUrl = hasPreviousPage
+                    ? new Uri(this.linkGenerator.GetUriByRouteValues(
+                        httpContext,
+                        CarsControllerRoute.GetCarPage,
+                        new PageOptions()
+                        {
+                            Last = pageOptions.First ?? pageOptions.Last,
+                            Before = startCursor,
+                        })!)
+                    : null,
                 FirstPageUrl = new Uri(this.linkGenerator.GetUriByRouteValues(
                     httpContext,
                     CarsControllerRoute.GetCarPage,
