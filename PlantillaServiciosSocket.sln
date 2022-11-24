@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantillaServiciosSocket", "PlantillaServiciosSocket\Source\PlantillaServiciosSocket\PlantillaServiciosSocket.csproj", "{74021111-F61B-4EA1-8F6D-BE021A9477CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantillaServiciosSocket.IntegrationTest", "PlantillaServiciosSocket\Tests\PlantillaServiciosSocket.IntegrationTest\PlantillaServiciosSocket.IntegrationTest.csproj", "{65EF8118-768B-4591-BF7C-8CE8FD71296E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{74021111-F61B-4EA1-8F6D-BE021A9477CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74021111-F61B-4EA1-8F6D-BE021A9477CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74021111-F61B-4EA1-8F6D-BE021A9477CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74021111-F61B-4EA1-8F6D-BE021A9477CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65EF8118-768B-4591-BF7C-8CE8FD71296E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65EF8118-768B-4591-BF7C-8CE8FD71296E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65EF8118-768B-4591-BF7C-8CE8FD71296E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65EF8118-768B-4591-BF7C-8CE8FD71296E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
